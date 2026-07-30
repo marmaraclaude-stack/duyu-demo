@@ -34,14 +34,30 @@ Topbar'daki kullanıcı menüsünden anında rol değiştirilir:
 | Yetki ve kayıt izi (yönetici) | Rol matrisi özeti + işlem logu tablosu |
 | Meta lead kuyruğu | "Yeni lead düştü" simülasyonu: kuyruk → mükerrer numara kontrolü → en az yüklü temsilciye otomatik atama |
 
+## Canlı Supabase bağlantısı
+
+`.env.local` (veya Vercel ortam değişkenleri) tanımlıysa uygulama açılışta
+veriyi Supabase'ten yükler ve her CRUD işlemini arka planda veritabanına
+yazar; tanımlı değilse yerel demo verisiyle çalışır. Sol alt köşedeki rozet
+hangi kaynağın aktif olduğunu gösterir.
+
+```bash
+cp .env.example .env.local   # değerleri Supabase panelinden doldurun
+```
+
+Şema ve tohum verisi `supabase/` klasöründedir: `migrations/0001_crm_schema.sql`
+(tablolar + RLS), `migrations/0002_demo_write_policies.sql` (demo yazma
+politikaları), `seed.sql` (güne göre üretilen demo kayıtlar).
+
 ## Mimari notlar
 
 - Next.js 14 App Router + TypeScript + Tailwind. Sayfalar server component,
   etkileşimli parçalar ayrı client component.
 - Demo verisi `lib/data/*` altında; okuma katmanı `lib/queries.ts` içinde saf
-  seçicilerdir. Supabase'e geçişte bu imzalar korunarak gövdeler gerçek
-  sorgulara bağlanır, bileşenler değişmez.
-- Tüm CRUD `lib/store/DataProvider.tsx` içindeki yerel store üzerinde çalışır;
+  seçicilerdir ve veri kaynağından bağımsızdır.
+- Tüm CRUD `lib/store/DataProvider.tsx` üzerinde optimistik çalışır; Supabase
+  yapılandırılmışsa her mutasyon `lib/supabase/*` üzerinden kalıcı yazılır ve
   her işlem kayıt izine (audit log) düşer.
-- Demo saati güne sabitlenmiştir (`lib/demo-time.ts`): tohum verisi her gün
-  "bugüne göre" taze görünür.
+- Demo saati güne sabitlenmiştir (`lib/demo-time.ts`): yerel tohum verisi her
+  gün "bugüne göre" taze görünür; SQL tohumları da `current_date` üzerinden
+  aynı davranışı gösterir.
