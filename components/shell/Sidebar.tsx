@@ -118,10 +118,10 @@ export function Sidebar({
         <IconBuilding className="h-5 w-5" />
       </span>
       <div>
-        <p className="text-base font-semibold tracking-wide text-white">
+        <p className="text-base font-semibold text-white">
           Duyu Konutları
         </p>
-        <p className="text-[11px] tracking-[0.18em] text-gold-400">
+        <p className="text-xs font-medium tracking-[0.06em] text-gold-400">
           Satış CRM
         </p>
       </div>

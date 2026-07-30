@@ -55,10 +55,10 @@ export function PlanPrintView({
       <div className="print-page mx-auto max-w-3xl overflow-hidden rounded-xl bg-white shadow-card">
         <header className="flex items-center justify-between bg-ink-950 px-8 py-6">
           <div>
-            <p className="text-xl font-semibold tracking-wide text-white">
+            <p className="text-xl font-semibold text-white">
               Duyu Konutları
             </p>
-            <p className="mt-0.5 text-[11px] tracking-[0.2em] text-gold-400">
+            <p className="mt-0.5 text-xs font-medium tracking-[0.06em] text-gold-400">
               Ödeme planı teklifi
             </p>
           </div>
