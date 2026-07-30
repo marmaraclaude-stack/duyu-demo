@@ -135,7 +135,7 @@ export function PlansView() {
                 ) : null}
               </div>
               <div className="px-5 pt-4">
-                <p className="font-serif text-3xl font-semibold text-ink-900">
+                <p className="text-3xl font-semibold text-ink-900">
                   {formatMoney(p.listPrice)}
                 </p>
                 <p className="mt-1 text-xs text-ink-400">

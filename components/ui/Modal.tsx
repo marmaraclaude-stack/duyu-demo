@@ -58,7 +58,7 @@ export function Modal({
       >
         <div className="sticky top-0 flex items-start justify-between gap-4 border-b border-ink-100 bg-white px-5 py-4">
           <div>
-            <h2 className="font-serif text-lg font-semibold text-ink-900">
+            <h2 className="text-lg font-semibold text-ink-900">
               {title}
             </h2>
             {subtitle ? (
