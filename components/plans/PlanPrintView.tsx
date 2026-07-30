@@ -55,10 +55,10 @@ export function PlanPrintView({
       <div className="print-page mx-auto max-w-3xl overflow-hidden rounded-xl bg-white shadow-card">
         <header className="flex items-center justify-between bg-ink-950 px-8 py-6">
           <div>
-            <p className="text-lg font-semibold tracking-wide text-white">
+            <p className="font-serif text-xl font-semibold tracking-wide text-white">
               Duyu Konutları
             </p>
-            <p className="mt-0.5 text-[11px] tracking-[0.2em] text-gold-500">
+            <p className="mt-0.5 text-[11px] tracking-[0.2em] text-gold-400">
               Ödeme planı teklifi
             </p>
           </div>
@@ -69,7 +69,9 @@ export function PlanPrintView({
         </header>
 
         <div className="px-8 py-7">
-          <h1 className="text-xl font-semibold text-ink-900">{plan.name}</h1>
+          <h1 className="font-serif text-2xl font-semibold text-ink-900">
+            {plan.name}
+          </h1>
           <p className="mt-1 text-sm text-ink-400">
             {plan.block} Blok · {plan.unitType} daire tipi için hazırlanmıştır
           </p>

@@ -1,9 +1,30 @@
 import type { Metadata, Viewport } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import { DM_Mono, Manrope, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/shell/AppShell";
 import { DataProvider } from "@/lib/store/DataProvider";
+
+// Tipografi: Manrope (arayüz metni, yüksek okunabilirlik), Playfair Display
+// (marka, sayfa başlıkları ve büyük rakamlar · lüks seri ciddiyeti),
+// DM Mono (telefon, ID, saat ve tablo tutarları).
+const manrope = Manrope({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const dmMono = DM_Mono({
+  weight: ["400", "500"],
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Duyu Konutları · Satış CRM",
@@ -26,7 +47,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="tr" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html
+      lang="tr"
+      className={`${manrope.variable} ${playfair.variable} ${dmMono.variable}`}
+    >
       <body className="font-sans">
         <DataProvider>
           <AppShell>{children}</AppShell>

@@ -120,7 +120,7 @@ export function LeadDetailView({ leadId }: { leadId: string }) {
             <Avatar name={lead.name} size="lg" />
             <div>
               <div className="flex flex-wrap items-center gap-3">
-                <h2 className="text-lg font-semibold text-ink-900">
+                <h2 className="font-serif text-xl font-semibold text-ink-900">
                   {lead.name}
                 </h2>
                 <StatusBadge status={lead.status} />

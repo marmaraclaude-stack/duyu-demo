@@ -9,33 +9,34 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Antrasit / siyah zemin skalası
+        // Sıcak grafit / antrasit skalası: koyu uçlar sidebar ve vurgular,
+        // açık uçlar hafif fildişi esintili yüzeyler
         ink: {
-          950: "#0A0A0C",
-          900: "#111114",
-          850: "#17171C",
-          800: "#1E1E24",
-          700: "#2A2A32",
-          600: "#3B3B45",
-          500: "#54545F",
-          400: "#75757F",
-          300: "#9C9CA4",
-          200: "#C6C6CC",
-          100: "#E4E4E8",
-          50: "#F4F4F6",
+          950: "#0F0F10",
+          900: "#17171A",
+          850: "#1D1D21",
+          800: "#242429",
+          700: "#303036",
+          600: "#43434A",
+          500: "#5B5B63",
+          400: "#7D7D85",
+          300: "#A3A3AA",
+          200: "#DBDAD4",
+          100: "#E9E8E3",
+          50: "#F6F5F1",
         },
-        // Altın aksan bandı
+        // Klasik altın (#D4AF37) merkezli, şampanyaya açılan aksan bandı
         gold: {
-          50: "#FBF7E9",
-          100: "#F5ECCB",
-          200: "#EBDCA0",
-          300: "#E2CB74",
-          400: "#DBBC52",
+          50: "#FBF7EA",
+          100: "#F7EFD3",
+          200: "#EFE2AC",
+          300: "#E6D287",
+          400: "#DEC167",
           500: "#D4AF37",
-          600: "#C9A227",
-          700: "#A5851F",
-          800: "#7F6618",
-          900: "#5C4A12",
+          600: "#BF9B2F",
+          700: "#9C7E26",
+          800: "#77601D",
+          900: "#554414",
         },
         // Olumsuz durumlar için kısıtlı kırmızı
         danger: {
@@ -47,12 +48,27 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        serif: ["var(--font-display)", "Georgia", "serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       boxShadow: {
-        card: "0 1px 2px rgba(10, 10, 12, 0.05), 0 1px 3px rgba(10, 10, 12, 0.06)",
-        pop: "0 4px 12px rgba(10, 10, 12, 0.10), 0 12px 32px rgba(10, 10, 12, 0.14)",
+        card: "0 1px 2px rgba(15, 15, 16, 0.04), 0 1px 3px rgba(15, 15, 16, 0.06)",
+        pop: "0 4px 12px rgba(15, 15, 16, 0.10), 0 12px 32px rgba(15, 15, 16, 0.16)",
+      },
+      keyframes: {
+        "modal-in": {
+          "0%": { opacity: "0", transform: "translateY(12px) scale(0.98)" },
+          "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+        },
+        "overlay-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+      },
+      animation: {
+        "modal-in": "modal-in 180ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "overlay-in": "overlay-in 150ms ease-out",
       },
     },
   },

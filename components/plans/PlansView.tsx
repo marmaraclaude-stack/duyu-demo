@@ -8,12 +8,14 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Select } from "@/components/ui/Field";
 import { IconEdit, IconPlus, IconPrinter } from "@/components/ui/Icons";
 import { formatDate, formatDateTime, formatMoney } from "@/lib/format";
+import { can } from "@/lib/permissions";
 import { useData } from "@/lib/store/DataProvider";
 import type { Block, PaymentPlan, UnitType } from "@/lib/types";
 import { PlanFormModal } from "./PlanFormModal";
 
 export function PlansView() {
-  const { plans, printLogs, users, leads, logPrint } = useData();
+  const { plans, printLogs, users, leads, logPrint, role } = useData();
+  const canManage = can(role, "plans.manage");
   const [blockFilter, setBlockFilter] = useState<"" | Block>("");
   const [typeFilter, setTypeFilter] = useState<"" | UnitType>("");
   const [formOpen, setFormOpen] = useState(false);
@@ -60,15 +62,21 @@ export function PlansView() {
           </Select>
         </div>
         <div className="flex-1" />
-        <Button
-          variant="gold"
-          onClick={() => {
-            setEditing(undefined);
-            setFormOpen(true);
-          }}
-        >
-          <IconPlus className="h-4 w-4" /> Yeni plan
-        </Button>
+        {canManage ? (
+          <Button
+            variant="gold"
+            onClick={() => {
+              setEditing(undefined);
+              setFormOpen(true);
+            }}
+          >
+            <IconPlus className="h-4 w-4" /> Yeni plan
+          </Button>
+        ) : (
+          <p className="text-xs text-ink-400">
+            Plan ekleme ve düzenleme yönetici yetkisindedir
+          </p>
+        )}
       </div>
 
       {/* Plan kartları */}
@@ -109,19 +117,21 @@ export function PlansView() {
                     {p.name}
                   </h3>
                 </div>
-                <button
-                  onClick={() => {
-                    setEditing(p);
-                    setFormOpen(true);
-                  }}
-                  className="rounded-lg p-1.5 text-ink-300 hover:bg-ink-100 hover:text-ink-700"
-                  title="Planı düzenle"
-                >
-                  <IconEdit className="h-4 w-4" />
-                </button>
+                {canManage ? (
+                  <button
+                    onClick={() => {
+                      setEditing(p);
+                      setFormOpen(true);
+                    }}
+                    className="rounded-lg p-1.5 text-ink-300 hover:bg-ink-100 hover:text-ink-700"
+                    title="Planı düzenle"
+                  >
+                    <IconEdit className="h-4 w-4" />
+                  </button>
+                ) : null}
               </div>
               <div className="px-5 pt-4">
-                <p className="font-mono text-2xl font-semibold text-ink-900">
+                <p className="font-serif text-3xl font-semibold text-ink-900">
                   {formatMoney(p.listPrice)}
                 </p>
                 <p className="mt-1 text-xs text-ink-400">

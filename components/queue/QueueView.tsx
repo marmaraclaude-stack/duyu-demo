@@ -7,6 +7,7 @@ import { IconArrowRight, IconInbox, IconSpark } from "@/components/ui/Icons";
 import { Avatar } from "@/components/ui/Avatar";
 import { formatPhone, formatTime } from "@/lib/format";
 import { QUEUE_STAGE_LABELS, SOURCE_LABELS } from "@/lib/labels";
+import { can } from "@/lib/permissions";
 import { useData } from "@/lib/store/DataProvider";
 import type { QueueItem, QueueStage } from "@/lib/types";
 
@@ -47,7 +48,8 @@ function StageTracker({ item }: { item: QueueItem }) {
 }
 
 export function QueueView() {
-  const { queue, users, leads, simulateIncomingLead } = useData();
+  const { queue, users, leads, simulateIncomingLead, role } = useData();
+  const canTrigger = can(role, "queue.trigger");
 
   const agentName = (id?: string) =>
     id ? (users.find((u) => u.id === id)?.name ?? "·") : "·";
@@ -76,9 +78,16 @@ export function QueueView() {
               düşürün.
             </p>
           </div>
-          <Button variant="gold" size="md" onClick={simulateIncomingLead}>
-            <IconSpark className="h-4 w-4" /> Yeni lead düştü
-          </Button>
+          {canTrigger ? (
+            <Button variant="gold" size="md" onClick={simulateIncomingLead}>
+              <IconSpark className="h-4 w-4" /> Yeni lead düştü
+            </Button>
+          ) : (
+            <p className="max-w-[200px] text-xs leading-relaxed text-ink-400">
+              Simülasyonu yönetici tetikler; size atanan başvurular burada ve
+              müşteri listenizde görünür.
+            </p>
+          )}
         </div>
         <div className="grid grid-cols-1 gap-px bg-ink-100 sm:grid-cols-3">
           {[

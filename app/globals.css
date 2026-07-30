@@ -27,6 +27,11 @@ body {
   @apply text-xs font-medium tracking-[0.14em] text-ink-400;
 }
 
+/* Rakam hizalaması: sans metin içindeki sayılar tablo düzeninde hizalanır */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
 /* Yazdırma görünümü */
 @media print {
   body {

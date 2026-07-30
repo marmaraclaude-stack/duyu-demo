@@ -152,7 +152,7 @@ export function ReportsView() {
         ].map((s) => (
           <Card key={s.label} className="px-5 py-4">
             <p className="text-xs font-medium text-ink-400">{s.label}</p>
-            <p className="mt-2 font-mono text-2xl font-semibold text-ink-900">
+            <p className="mt-2 font-serif text-3xl font-semibold text-ink-900">
               {typeof s.value === "number" ? formatNumber(s.value) : s.value}
             </p>
             <p className="mt-1 text-[11px] text-ink-300">

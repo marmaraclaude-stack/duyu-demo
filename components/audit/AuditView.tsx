@@ -19,6 +19,7 @@ const MATRIX: { module: string; admin: string; agent: string }[] = [
   { module: "Raporlama", admin: "Evet", agent: "Hayır" },
   { module: "Yetki ve kayıt izi", admin: "Evet", agent: "Hayır" },
   { module: "CSV/Excel dışa aktarma", admin: "Evet", agent: "Kendi listesi" },
+  { module: "Meta kuyruğu · lead düşürme", admin: "Evet", agent: "İzleme" },
 ];
 
 export function AuditView() {
