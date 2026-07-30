@@ -69,7 +69,7 @@ export function RepDashboard() {
       <Card className="overflow-hidden">
         <div className="flex flex-col gap-6 bg-ink-950 px-6 py-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[11px] tracking-[0.2em] text-gold-400">
+            <p className="text-xs font-medium tracking-[0.06em] text-gold-400">
               {formatDayName(now.toISOString())} · {formatDate(now.toISOString())}
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-white">

@@ -77,7 +77,7 @@ export function QueueView() {
       <Card className="overflow-hidden">
         <div className="flex flex-col gap-5 bg-ink-950 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-xl">
-            <p className="text-[11px] tracking-[0.2em] text-gold-500">
+            <p className="text-xs font-medium tracking-[0.06em] text-gold-500">
               Canlı simülasyon
             </p>
             <h2 className="mt-1.5 text-lg font-semibold text-white">
