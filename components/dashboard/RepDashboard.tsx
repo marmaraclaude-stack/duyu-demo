@@ -83,7 +83,7 @@ export function RepDashboard() {
           <div className="w-full sm:w-72">
             <div className="mb-1.5 flex items-baseline justify-between">
               <span className="text-xs text-ink-300">Günlük arama hedefi</span>
-              <span className="font-mono text-sm font-medium text-gold-300">
+              <span className="tabular text-sm font-medium text-gold-300">
                 {myCalls}/{DAILY_TARGET}
               </span>
             </div>
@@ -193,7 +193,7 @@ export function RepDashboard() {
                     </p>
                   </div>
                   <span
-                    className={`shrink-0 font-mono text-sm font-medium ${
+                    className={`shrink-0 tabular text-sm font-medium ${
                       late ? "text-danger-600" : "text-ink-900"
                     }`}
                   >
@@ -241,7 +241,7 @@ export function RepDashboard() {
                     />
                     {STATUS_LABELS[status]}
                   </span>
-                  <span className="font-mono font-medium text-ink-900">
+                  <span className="tabular font-medium text-ink-900">
                     {count}
                   </span>
                 </div>
@@ -282,7 +282,7 @@ export function RepDashboard() {
               </div>
               <div className="flex shrink-0 flex-col items-end gap-1">
                 <StatusBadge status={c.result} />
-                <span className="font-mono text-[11px] text-ink-400">
+                <span className="tabular text-[11px] text-ink-400">
                   {formatTime(c.at)}
                 </span>
               </div>

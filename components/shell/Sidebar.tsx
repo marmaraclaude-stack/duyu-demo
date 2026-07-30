@@ -102,7 +102,7 @@ export function Sidebar({
             />
             <span className="flex-1">{item.label}</span>
             {item.badge ? (
-              <span className="rounded-full bg-gold-600 px-1.5 py-0.5 font-mono text-[10px] font-semibold leading-none text-ink-950">
+              <span className="rounded-full bg-gold-600 px-1.5 py-0.5 tabular text-[10px] font-semibold leading-none text-ink-950">
                 {item.badge}
               </span>
             ) : null}

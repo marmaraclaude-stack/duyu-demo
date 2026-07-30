@@ -158,7 +158,7 @@ export function QueueView() {
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-ink-900">
                         {q.name}
-                        <span className="ml-2 font-mono text-xs text-ink-400">
+                        <span className="ml-2 tabular text-xs text-ink-400">
                           {formatPhone(q.phone)}
                         </span>
                       </p>

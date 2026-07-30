@@ -69,7 +69,7 @@ export function BarChart({
         {data.map((d, i) => (
           <span
             key={i}
-            className="flex-1 text-center font-mono text-[9px] text-ink-400 sm:text-[10px]"
+            className="flex-1 text-center tabular text-[9px] text-ink-400 sm:text-[10px]"
           >
             {d.label}
           </span>

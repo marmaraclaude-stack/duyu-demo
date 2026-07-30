@@ -217,7 +217,7 @@ export function PlansView() {
                       "·"
                     )}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 font-mono text-xs text-ink-400">
+                  <td className="whitespace-nowrap px-4 py-3 tabular text-xs text-ink-400">
                     {formatDateTime(log.at)}
                   </td>
                 </tr>

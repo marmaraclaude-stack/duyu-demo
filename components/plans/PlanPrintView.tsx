@@ -84,7 +84,7 @@ export function PlanPrintView({
               </div>
               <div>
                 <p className="text-xs text-ink-400">Telefon</p>
-                <p className="mt-0.5 font-mono text-ink-900">
+                <p className="mt-0.5 tabular text-ink-900">
                   {formatPhone(lead.phone)}
                 </p>
               </div>
@@ -160,7 +160,7 @@ export function PlanPrintView({
             <div className="text-xs text-ink-400">
               <p className="font-medium text-ink-600">{currentUser.name}</p>
               <p className="mt-0.5">{currentUser.title} · Duyu Konutları</p>
-              <p className="mt-0.5 font-mono">{currentUser.phone}</p>
+              <p className="mt-0.5 tabular">{currentUser.phone}</p>
             </div>
             <p className="max-w-xs text-right text-[10px] leading-snug text-ink-300">
               Bu belge bilgilendirme amaçlıdır, fiyat ve koşullar sözleşme

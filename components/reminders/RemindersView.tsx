@@ -179,7 +179,7 @@ export function RemindersView() {
       </div>
       <div className="flex shrink-0 items-center gap-2">
         <span
-          className={`font-mono text-sm font-semibold ${
+          className={`tabular text-sm font-semibold ${
             late ? "text-danger-600" : "text-ink-900"
           }`}
         >
@@ -289,7 +289,7 @@ export function RemindersView() {
                   <span className="block text-xs font-medium text-ink-700">
                     {relativeDay(r.dueAt, demoNow())}
                   </span>
-                  <span className="block font-mono text-xs text-ink-400">
+                  <span className="block tabular text-xs text-ink-400">
                     {formatDate(r.dueAt)} · {formatTime(r.dueAt)}
                   </span>
                 </span>

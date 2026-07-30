@@ -128,7 +128,7 @@ export function AuditView() {
                   <td className="px-4 py-3 text-xs text-ink-400">
                     {a.detail ?? "·"}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 font-mono text-xs text-ink-400">
+                  <td className="whitespace-nowrap px-4 py-3 tabular text-xs text-ink-400">
                     {formatDateTime(a.at)}
                   </td>
                 </tr>

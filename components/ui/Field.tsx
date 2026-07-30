@@ -76,7 +76,7 @@ export function MoneyInput({
       value={display}
       placeholder={placeholder}
       onChange={(e) => onValueChange(e.target.value.replace(/\D/g, ""))}
-      className={`${inputCls} font-mono`}
+      className={`${inputCls} tabular`}
     />
   );
 }

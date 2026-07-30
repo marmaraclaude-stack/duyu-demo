@@ -46,7 +46,7 @@ export function NotificationsBell() {
       >
         <IconBell className="h-5 w-5" />
         {count > 0 ? (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-600 px-1 font-mono text-[10px] font-semibold text-ink-950">
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-600 px-1 tabular text-[10px] font-semibold text-ink-950">
             {count}
           </span>
         ) : null}

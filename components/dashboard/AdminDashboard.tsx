@@ -128,7 +128,7 @@ export function AdminDashboard() {
                       <Avatar name={name} size="sm" />
                       {name}
                     </span>
-                    <span className="font-mono text-sm font-medium text-ink-900">
+                    <span className="tabular text-sm font-medium text-ink-900">
                       {t.calls}
                       <span className="ml-1.5 font-sans text-[11px] font-normal text-ink-400">
                         %{Math.round((t.reached / t.calls) * 100)} ulaşma
@@ -158,7 +158,7 @@ export function AdminDashboard() {
                         style={{ width: `${(count / maxSource) * 100}%` }}
                       />
                     </span>
-                    <span className="w-6 text-right font-mono text-xs text-ink-700">
+                    <span className="w-6 text-right tabular text-xs text-ink-700">
                       {count}
                     </span>
                   </div>
@@ -215,7 +215,7 @@ export function AdminDashboard() {
                     </p>
                   </div>
                   <span
-                    className={`font-mono text-xs font-medium ${
+                    className={`tabular text-xs font-medium ${
                       late ? "text-danger-600" : "text-ink-700"
                     }`}
                   >
@@ -262,7 +262,7 @@ export function AdminDashboard() {
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1">
                   <StatusBadge status={c.result} />
-                  <span className="font-mono text-[11px] text-ink-400">
+                  <span className="tabular text-[11px] text-ink-400">
                     {formatTime(c.at)}
                   </span>
                 </div>
