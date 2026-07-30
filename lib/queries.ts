@@ -95,14 +95,12 @@ export function filterLeads(leads: Lead[], p: LeadFilterParams): Lead[] {
     out = out.filter((l) => (l.budget ?? 0) >= p.budgetMin!);
   if (p.budgetMax !== undefined)
     out = out.filter((l) => (l.budget ?? Infinity) <= p.budgetMax!);
+  // Tarih aralığı "YYYY-MM-DD" olarak tutulur ve gün bazında karşılaştırılır;
+  // böylece saat dilimi kaynaklı bir günlük kayma oluşmaz.
   if (p.dateFrom)
-    out = out.filter((l) => l.createdAt >= p.dateFrom!);
-  if (p.dateTo) {
-    const end = new Date(p.dateTo);
-    end.setHours(23, 59, 59, 999);
-    const endIso = end.toISOString();
-    out = out.filter((l) => l.createdAt <= endIso);
-  }
+    out = out.filter((l) => l.createdAt.slice(0, 10) >= p.dateFrom!);
+  if (p.dateTo)
+    out = out.filter((l) => l.createdAt.slice(0, 10) <= p.dateTo!);
   return out;
 }
 

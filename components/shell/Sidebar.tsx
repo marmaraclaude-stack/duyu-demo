@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { can } from "@/lib/permissions";
 import { useData } from "@/lib/store/DataProvider";
 import { overdueReminders, scopeReminders, todayReminders } from "@/lib/queries";
 import {
@@ -32,7 +33,7 @@ export function Sidebar({
   onClose: () => void;
 }) {
   const pathname = usePathname();
-  const { role, currentUser, reminders, queue } = useData();
+  const { role, currentUser, reminders, queue, dataSource } = useData();
 
   const scoped = scopeReminders(reminders, currentUser.id, role);
   const openToday = todayReminders(scoped).filter((r) => !r.done).length;
@@ -42,7 +43,7 @@ export function Sidebar({
   ).length;
 
   const items: NavItem[] = [
-    { href: "/", label: "Genel bakış", icon: IconGrid },
+    { href: "/", label: role === "yonetici" ? "Yönetici panosu" : "Panom", icon: IconGrid },
     { href: "/musteriler", label: "Müşteriler", icon: IconUsers },
     {
       href: "/hatirlatmalar",
@@ -66,7 +67,13 @@ export function Sidebar({
     },
   ];
 
-  const visible = items.filter((i) => !i.adminOnly || role === "yonetici");
+  const visible = items.filter(
+    (i) =>
+      !i.adminOnly ||
+      (i.href === "/raporlar"
+        ? can(role, "reports.view")
+        : can(role, "audit.view"))
+  );
 
   const nav = (
     <nav className="flex flex-1 flex-col gap-1 px-3">
@@ -81,14 +88,17 @@ export function Sidebar({
             key={item.href}
             href={item.href}
             onClick={onClose}
-            className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+            className={`group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
               active
-                ? "bg-ink-800 font-medium text-gold-400"
+                ? "bg-ink-800 font-medium text-gold-300"
                 : "text-ink-300 hover:bg-ink-850 hover:text-white"
             }`}
           >
+            {active ? (
+              <span className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-gold-500" />
+            ) : null}
             <item.icon
-              className={`h-5 w-5 ${active ? "text-gold-500" : "text-ink-500 group-hover:text-ink-300"}`}
+              className={`h-5 w-5 ${active ? "text-gold-400" : "text-ink-500 group-hover:text-ink-300"}`}
             />
             <span className="flex-1">{item.label}</span>
             {item.badge ? (
@@ -108,10 +118,10 @@ export function Sidebar({
         <IconBuilding className="h-5 w-5" />
       </span>
       <div>
-        <p className="text-sm font-semibold tracking-wide text-white">
+        <p className="font-serif text-base font-semibold tracking-wide text-white">
           Duyu Konutları
         </p>
-        <p className="text-[11px] tracking-[0.14em] text-gold-500">
+        <p className="text-[11px] tracking-[0.18em] text-gold-400">
           Satış CRM
         </p>
       </div>
@@ -120,8 +130,16 @@ export function Sidebar({
 
   const footer = (
     <div className="border-t border-ink-800 px-6 py-4">
-      <p className="text-xs text-ink-500">
-        Demo sürüm · {role === "yonetici" ? "Yönetici görünümü" : "Temsilci görünümü"}
+      <p className="flex items-center gap-2 text-xs text-ink-500">
+        <span
+          className={`h-1.5 w-1.5 rounded-full ${
+            dataSource === "supabase" ? "bg-gold-500" : "bg-ink-600"
+          }`}
+        />
+        {dataSource === "supabase" ? "Canlı veri · Supabase" : "Demo veri · yerel"}
+      </p>
+      <p className="mt-1 text-xs text-ink-500">
+        {role === "yonetici" ? "Yönetici görünümü" : "Temsilci görünümü"}
       </p>
     </div>
   );

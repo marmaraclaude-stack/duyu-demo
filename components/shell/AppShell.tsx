@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { IconMenu } from "@/components/ui/Icons";
+import { useData } from "@/lib/store/DataProvider";
 import { GlobalSearch } from "./GlobalSearch";
 import { NotificationsBell } from "./NotificationsBell";
 import { RoleSwitcher } from "./RoleSwitcher";
@@ -17,13 +18,16 @@ const TITLES: Record<string, string> = {
   "/yetki": "Yetki ve kayıt izi",
 };
 
-function pageTitle(pathname: string): string {
+function pageTitle(pathname: string, role: string): string {
   if (pathname.startsWith("/musteriler/")) return "Müşteri kartı";
-  return TITLES[pathname] ?? "Genel bakış";
+  return (
+    TITLES[pathname] ?? (role === "yonetici" ? "Yönetici panosu" : "Panom")
+  );
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const { role } = useData();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Yazdırma görünümleri kabuk olmadan, temiz beyaz sayfada açılır.
@@ -44,8 +48,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             >
               <IconMenu className="h-5 w-5" />
             </button>
-            <h1 className="hidden min-w-fit text-base font-semibold text-ink-900 md:block">
-              {pageTitle(pathname)}
+            <h1 className="hidden min-w-fit font-serif text-lg font-semibold text-ink-900 md:block">
+              {pageTitle(pathname, role)}
             </h1>
             <div className="flex flex-1 justify-center px-2">
               <GlobalSearch />
@@ -53,8 +57,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             <NotificationsBell />
             <RoleSwitcher />
           </div>
-          <h1 className="border-t border-ink-100 px-4 py-2 text-sm font-semibold text-ink-900 md:hidden">
-            {pageTitle(pathname)}
+          <h1 className="border-t border-ink-100 px-4 py-2 font-serif text-base font-semibold text-ink-900 md:hidden">
+            {pageTitle(pathname, role)}
           </h1>
         </header>
         <main className="flex-1 px-4 py-6 sm:px-6">{children}</main>

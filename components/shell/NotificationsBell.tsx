@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { IconBell, IconClock } from "@/components/ui/Icons";
-import { formatTime } from "@/lib/format";
+import { isToday } from "@/lib/demo-time";
+import { formatDateShort, formatTime } from "@/lib/format";
 import {
   overdueReminders,
   scopeReminders,
@@ -82,7 +83,10 @@ export function NotificationsBell() {
                       </span>
                       <span className="block text-xs text-ink-400">
                         {REMINDER_TYPE_LABELS[r.type]} · plan{" "}
-                        {formatTime(r.dueAt)} idi
+                        {isToday(r.dueAt)
+                          ? `bugün ${formatTime(r.dueAt)}`
+                          : `${formatDateShort(r.dueAt)} · ${formatTime(r.dueAt)}`}{" "}
+                        idi
                       </span>
                     </span>
                   </Link>

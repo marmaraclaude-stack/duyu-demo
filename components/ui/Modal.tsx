@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { IconX } from "./Icons";
 
+// Modallar document.body altına portallanır: kabuktaki yapışkan topbar ve
+// stacking context'lerden bağımsız olarak tüm görünümü tek örtüyle kaplar.
 export function Modal({
   open,
   onClose,
@@ -18,6 +21,10 @@ export function Modal({
   children: ReactNode;
   wide?: boolean;
 }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -31,22 +38,29 @@ export function Modal({
     };
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center sm:p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+    >
       <div
-        className="absolute inset-0 bg-ink-950/60 backdrop-blur-sm"
+        className="absolute inset-0 animate-overlay-in bg-ink-950/75"
         onClick={onClose}
       />
       <div
-        className={`relative z-10 max-h-[92vh] w-full overflow-y-auto rounded-t-2xl bg-white shadow-pop sm:rounded-2xl ${
+        className={`relative z-10 max-h-[92vh] w-full animate-modal-in overflow-y-auto overscroll-contain rounded-t-2xl bg-white shadow-pop sm:rounded-2xl ${
           wide ? "sm:max-w-2xl" : "sm:max-w-lg"
         }`}
       >
         <div className="sticky top-0 flex items-start justify-between gap-4 border-b border-ink-100 bg-white px-5 py-4">
           <div>
-            <h2 className="text-base font-semibold text-ink-900">{title}</h2>
+            <h2 className="font-serif text-lg font-semibold text-ink-900">
+              {title}
+            </h2>
             {subtitle ? (
               <p className="mt-0.5 text-xs text-ink-400">{subtitle}</p>
             ) : null}
@@ -61,6 +75,7 @@ export function Modal({
         </div>
         <div className="px-5 py-4">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

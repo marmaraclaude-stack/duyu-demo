@@ -1,13 +1,15 @@
 "use client";
 
 // Demo veri deposu: tüm CRUD işlemleri yerel state üzerinde optimistik
-// çalışır. Supabase'e geçişte aksiyon gövdeleri sorgulara bağlanır,
-// bileşen arayüzü değişmez.
+// çalışır. Supabase yapılandırılmışsa (NEXT_PUBLIC_SUPABASE_*) açılışta
+// canlı veri yüklenir ve her mutasyon arka planda veritabanına yazılır;
+// yapılandırılmamışsa uygulama yerel tohum veriyle çalışır.
 
 import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -18,6 +20,23 @@ import { CALLS, LEADS, REMINDERS } from "../data/leads";
 import { PLANS, PRINT_LOGS } from "../data/plans";
 import { USERS } from "../data/users";
 import { demoNow } from "../demo-time";
+import { getSupabase } from "../supabase/client";
+import {
+  auditToRow,
+  callToRow,
+  leadPatchToRow,
+  leadToRow,
+  planPatchToRow,
+  planToRow,
+  printLogToRow,
+  reminderToRow,
+  rowToAudit,
+  rowToCall,
+  rowToLead,
+  rowToPlan,
+  rowToPrintLog,
+  rowToReminder,
+} from "../supabase/mappers";
 import type {
   AuditLog,
   CallRecord,
@@ -39,10 +58,13 @@ interface AddCallInput {
   reminderType?: Reminder["type"];
 }
 
+export type DataSource = "demo" | "supabase";
+
 interface DataContextValue {
   users: User[];
   currentUser: User;
   role: Role;
+  dataSource: DataSource;
   setCurrentUserId: (id: string) => void;
 
   leads: Lead[];
@@ -74,7 +96,15 @@ const DataContext = createContext<DataContextValue | null>(null);
 let seq = 100;
 function nextId(prefix: string): string {
   seq += 1;
-  return `${prefix}-${seq}`;
+  const rand = Math.random().toString(36).slice(2, 6);
+  return `${prefix}-${seq}${rand}`;
+}
+
+// Arka plan Supabase yazmaları: demo akışını bloklamaz, hata loglanır.
+function sbCatch(p: PromiseLike<{ error: unknown }>): void {
+  Promise.resolve(p).then(({ error }) => {
+    if (error) console.warn("Supabase yazma hatası:", error);
+  });
 }
 
 const DEFAULT_FILTERS: SavedFilter[] = [
@@ -137,6 +167,7 @@ const INCOMING_POOL = [
 
 export function DataProvider({ children }: { children: ReactNode }) {
   const [currentUserId, setCurrentUserId] = useState("u-adil");
+  const [dataSource, setDataSource] = useState<DataSource>("demo");
   const [leads, setLeads] = useState<Lead[]>(LEADS);
   const [calls, setCalls] = useState<CallRecord[]>(CALLS);
   const [reminders, setReminders] = useState<Reminder[]>(REMINDERS);
@@ -152,22 +183,61 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const leadsRef = useRef(leads);
   leadsRef.current = leads;
 
+  // Açılışta canlı veri: Supabase yapılandırılmışsa tüm tablolar yüklenir.
+  useEffect(() => {
+    const sb = getSupabase();
+    if (!sb) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const [l, c, r, p, pl, a] = await Promise.all([
+          sb.from("leads").select("*").order("updated_at", { ascending: false }),
+          sb.from("calls").select("*").order("at", { ascending: false }),
+          sb.from("reminders").select("*").order("due_at"),
+          sb.from("payment_plans").select("*").order("name"),
+          sb.from("print_logs").select("*").order("at", { ascending: false }),
+          sb
+            .from("audit_logs")
+            .select("*")
+            .order("at", { ascending: false })
+            .limit(100),
+        ]);
+        const firstError =
+          l.error ?? c.error ?? r.error ?? p.error ?? pl.error ?? a.error;
+        if (firstError) throw firstError;
+        if (cancelled) return;
+        setLeads((l.data ?? []).map(rowToLead));
+        setCalls((c.data ?? []).map(rowToCall));
+        setReminders((r.data ?? []).map(rowToReminder));
+        setPlans((p.data ?? []).map(rowToPlan));
+        setPrintLogs((pl.data ?? []).map(rowToPrintLog));
+        setAuditLogs((a.data ?? []).map(rowToAudit));
+        setDataSource("supabase");
+      } catch (e) {
+        console.warn("Supabase verisi yüklenemedi, demo veriyle devam:", e);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const currentUser = USERS.find((u) => u.id === currentUserId) ?? USERS[0];
   const role: Role = currentUser.role;
 
   const audit = useCallback(
-    (action: string, target: string, detail?: string) => {
-      setAuditLogs((prev) => [
-        {
-          id: nextId("a"),
-          userId: currentUserId,
-          action,
-          target,
-          detail,
-          at: new Date().toISOString(),
-        },
-        ...prev,
-      ]);
+    (action: string, target: string, detail?: string, userId?: string) => {
+      const entry: AuditLog = {
+        id: nextId("a"),
+        userId: userId ?? currentUserId,
+        action,
+        target,
+        detail,
+        at: new Date().toISOString(),
+      };
+      setAuditLogs((prev) => [entry, ...prev]);
+      const sb = getSupabase();
+      if (sb) sbCatch(sb.from("audit_logs").insert(auditToRow(entry)));
     },
     [currentUserId]
   );
@@ -177,7 +247,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
       const now = new Date().toISOString();
       const lead: Lead = { ...input, id: nextId("l"), createdAt: now, updatedAt: now };
       setLeads((prev) => [lead, ...prev]);
-      audit("Yeni müşteri ekleme", lead.name, `Kaynak üzerinden manuel kayıt`);
+      const sb = getSupabase();
+      if (sb) sbCatch(sb.from("leads").insert(leadToRow(lead)));
+      audit("Yeni müşteri ekleme", lead.name, "Manuel kayıt");
       return lead;
     },
     [audit]
@@ -192,6 +264,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
             : l
         )
       );
+      const sb = getSupabase();
+      if (sb) sbCatch(sb.from("leads").update(leadPatchToRow(patch)).eq("id", id));
       const lead = leads.find((l) => l.id === id);
       audit("Müşteri güncelleme", lead?.name ?? id);
     },
@@ -203,6 +277,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
       const lead = leads.find((l) => l.id === id);
       setLeads((prev) => prev.filter((l) => l.id !== id));
       setReminders((prev) => prev.filter((r) => r.leadId !== id));
+      setCalls((prev) => prev.filter((c) => c.leadId !== id));
+      const sb = getSupabase();
+      if (sb) sbCatch(sb.from("leads").delete().eq("id", id));
       audit("Müşteri silme", lead?.name ?? id);
     },
     [audit, leads]
@@ -228,21 +305,27 @@ export function DataProvider({ children }: { children: ReactNode }) {
             : l
         )
       );
+      const sb = getSupabase();
+      if (sb) {
+        sbCatch(sb.from("calls").insert(callToRow(call)));
+        sbCatch(
+          sb.from("leads").update({ status: input.result }).eq("id", input.leadId)
+        );
+      }
       // Sonraki arama tarihi girildiği anda hatırlatma otomatik oluşur.
       if (input.nextCallAt) {
-        setReminders((prev) => [
-          {
-            id: nextId("r"),
-            leadId: input.leadId,
-            agentId: currentUserId,
-            type: input.reminderType ?? "arama",
-            dueAt: input.nextCallAt!,
-            note: input.note,
-            done: false,
-            createdAt: now,
-          },
-          ...prev,
-        ]);
+        const reminder: Reminder = {
+          id: nextId("r"),
+          leadId: input.leadId,
+          agentId: currentUserId,
+          type: input.reminderType ?? "arama",
+          dueAt: input.nextCallAt,
+          note: input.note,
+          done: false,
+          createdAt: now,
+        };
+        setReminders((prev) => [reminder, ...prev]);
+        if (sb) sbCatch(sb.from("reminders").insert(reminderToRow(reminder)));
       }
       const lead = leads.find((l) => l.id === input.leadId);
       audit(
@@ -259,6 +342,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
       setReminders((prev) =>
         prev.map((r) => (r.id === id ? { ...r, done: true } : r))
       );
+      const sb = getSupabase();
+      if (sb) sbCatch(sb.from("reminders").update({ done: true }).eq("id", id));
       const rem = reminders.find((r) => r.id === id);
       const lead = leads.find((l) => l.id === rem?.leadId);
       audit("Hatırlatma tamamlama", lead?.name ?? id);
@@ -271,6 +356,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
       setReminders((prev) =>
         prev.map((r) => (r.id === id ? { ...r, dueAt: newDueAt } : r))
       );
+      const sb = getSupabase();
+      if (sb)
+        sbCatch(sb.from("reminders").update({ due_at: newDueAt }).eq("id", id));
       const rem = reminders.find((r) => r.id === id);
       const lead = leads.find((l) => l.id === rem?.leadId);
       audit("Hatırlatma erteleme", lead?.name ?? id);
@@ -286,6 +374,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
         updatedAt: new Date().toISOString(),
       };
       setPlans((prev) => [plan, ...prev]);
+      const sb = getSupabase();
+      if (sb) sbCatch(sb.from("payment_plans").insert(planToRow(plan)));
       audit("Ödeme planı ekleme", plan.name);
     },
     [audit]
@@ -300,6 +390,11 @@ export function DataProvider({ children }: { children: ReactNode }) {
             : p
         )
       );
+      const sb = getSupabase();
+      if (sb)
+        sbCatch(
+          sb.from("payment_plans").update(planPatchToRow(patch)).eq("id", id)
+        );
       const plan = plans.find((p) => p.id === id);
       audit("Ödeme planı güncelleme", plan?.name ?? id);
     },
@@ -308,16 +403,16 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   const logPrint = useCallback(
     (planId: string, leadId?: string) => {
-      setPrintLogs((prev) => [
-        {
-          id: nextId("pl"),
-          planId,
-          agentId: currentUserId,
-          leadId,
-          at: new Date().toISOString(),
-        },
-        ...prev,
-      ]);
+      const entry: PrintLog = {
+        id: nextId("pl"),
+        planId,
+        agentId: currentUserId,
+        leadId,
+        at: new Date().toISOString(),
+      };
+      setPrintLogs((prev) => [entry, ...prev]);
+      const sb = getSupabase();
+      if (sb) sbCatch(sb.from("print_logs").insert(printLogToRow(entry)));
       const plan = plans.find((p) => p.id === planId);
       const lead = leadId ? leads.find((l) => l.id === leadId) : undefined;
       audit(
@@ -386,17 +481,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
               : q
           )
         );
-        setAuditLogs((prev) => [
-          {
-            id: nextId("a"),
-            userId: "u-adil",
-            action: "Mükerrer numara engellendi",
-            target: profile.name,
-            detail: `Mevcut kayıt: ${duplicate.name} · ${duplicate.phone}`,
-            at: new Date().toISOString(),
-          },
-          ...prev,
-        ]);
+        audit(
+          "Mükerrer numara engellendi",
+          profile.name,
+          `Mevcut kayıt: ${duplicate.name} · ${duplicate.phone}`,
+          "u-adil"
+        );
         return;
       }
 
@@ -424,31 +514,29 @@ export function DataProvider({ children }: { children: ReactNode }) {
         updatedAt: now,
       };
       setLeads((prev) => [lead, ...prev]);
+      const sb = getSupabase();
+      if (sb) sbCatch(sb.from("leads").insert(leadToRow(lead)));
       setQueue((prev) =>
         prev.map((q) =>
           q.id === id ? { ...q, stage: "atandi", assignedTo: agentId } : q
         )
       );
       const agent = USERS.find((u) => u.id === agentId);
-      setAuditLogs((prev) => [
-        {
-          id: nextId("a"),
-          userId: "u-adil",
-          action: "Lead atama",
-          target: profile.name,
-          detail: `Meta kuyruğundan ${agent?.name ?? agentId} üzerine`,
-          at: now,
-        },
-        ...prev,
-      ]);
+      audit(
+        "Lead atama",
+        profile.name,
+        `Meta kuyruğundan ${agent?.name ?? agentId} üzerine`,
+        "u-adil"
+      );
     }, 2600);
-  }, []);
+  }, [audit]);
 
   const value = useMemo<DataContextValue>(
     () => ({
       users: USERS,
       currentUser,
       role,
+      dataSource,
       setCurrentUserId,
       leads,
       calls,
@@ -475,6 +563,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     [
       currentUser,
       role,
+      dataSource,
       leads,
       calls,
       reminders,

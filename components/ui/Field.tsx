@@ -34,10 +34,14 @@ export function TextInput(props: InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={`${inputCls} ${props.className ?? ""}`} />;
 }
 
-export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) {
+export function Select({
+  children,
+  className,
+  ...rest
+}: SelectHTMLAttributes<HTMLSelectElement>) {
   return (
-    <select {...props} className={`${inputCls} ${props.className ?? ""}`}>
-      {props.children}
+    <select {...rest} className={`${inputCls} ${className ?? ""}`}>
+      {children}
     </select>
   );
 }
@@ -48,6 +52,31 @@ export function TextArea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
       rows={3}
       {...props}
       className={`${inputCls} ${props.className ?? ""}`}
+    />
+  );
+}
+
+// Para girişi: rakamlar yazılırken binlik ayraçla gösterilir,
+// değere yalnızca rakamlar iletilir.
+export function MoneyInput({
+  value,
+  onValueChange,
+  placeholder,
+}: {
+  value: string;
+  onValueChange: (digits: string) => void;
+  placeholder?: string;
+}) {
+  const display = value
+    ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    : "";
+  return (
+    <input
+      inputMode="numeric"
+      value={display}
+      placeholder={placeholder}
+      onChange={(e) => onValueChange(e.target.value.replace(/\D/g, ""))}
+      className={`${inputCls} font-mono`}
     />
   );
 }

@@ -41,6 +41,13 @@ export function formatDate(iso: string): string {
   return `${pad2(d.getDate())} ${AYLAR[d.getMonth()]} ${d.getFullYear()}`;
 }
 
+// "YYYY-MM-DD" biçimindeki salt tarih değerleri için (saat dilimi kaymasız)
+export function formatDateOnly(ymd: string): string {
+  const [y, m, d] = ymd.split("-").map(Number);
+  if (!y || !m || !d) return ymd;
+  return `${pad2(d)} ${AYLAR[m - 1]} ${y}`;
+}
+
 export function formatDateShort(iso: string): string {
   const d = new Date(iso);
   return `${pad2(d.getDate())}.${pad2(d.getMonth() + 1)}`;
