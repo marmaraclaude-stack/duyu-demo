@@ -14,7 +14,8 @@ import type { Block, PaymentPlan, UnitType } from "@/lib/types";
 import { PlanFormModal } from "./PlanFormModal";
 
 export function PlansView() {
-  const { plans, printLogs, users, leads, logPrint, role } = useData();
+  const { plans, printLogs, users, leads, logPrint, role, currentUser } =
+    useData();
   const canManage = can(role, "plans.manage");
   const [blockFilter, setBlockFilter] = useState<"" | Block>("");
   const [typeFilter, setTypeFilter] = useState<"" | UnitType>("");
@@ -32,7 +33,10 @@ export function PlansView() {
     id ? (leads.find((l) => l.id === id)?.name ?? "·") : "·";
   const planName = (id: string) => plans.find((p) => p.id === id)?.name ?? "·";
 
-  const sortedLogs = [...printLogs].sort((a, b) => b.at.localeCompare(a.at));
+  // Temsilci yalnızca kendi aldığı çıktıları görür; ekip geneli yöneticiye özel
+  const sortedLogs = printLogs
+    .filter((l) => canManage || l.agentId === currentUser.id)
+    .sort((a, b) => b.at.localeCompare(a.at));
 
   return (
     <div className="space-y-6">
@@ -175,8 +179,12 @@ export function PlansView() {
       {/* Çıktı geçmişi */}
       <Card>
         <CardHeader
-          title="Çıktı geçmişi"
-          subtitle="Hangi temsilci, hangi planı, ne zaman yazdırdı"
+          title={canManage ? "Çıktı geçmişi" : "Çıktı geçmişim"}
+          subtitle={
+            canManage
+              ? "Hangi temsilci, hangi planı, ne zaman yazdırdı"
+              : "Sizin aldığınız plan çıktıları"
+          }
         />
         <div className="thin-scroll overflow-x-auto">
           <table className="w-full min-w-[640px] text-left text-sm">

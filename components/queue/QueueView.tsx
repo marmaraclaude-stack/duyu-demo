@@ -48,14 +48,26 @@ function StageTracker({ item }: { item: QueueItem }) {
 }
 
 export function QueueView() {
-  const { queue, users, leads, simulateIncomingLead, role } = useData();
+  const { queue, users, leads, simulateIncomingLead, role, currentUser } =
+    useData();
   const canTrigger = can(role, "queue.trigger");
+  const isAdmin = role === "yonetici";
 
   const agentName = (id?: string) =>
     id ? (users.find((u) => u.id === id)?.name ?? "·") : "·";
 
-  const assignedToday = queue.filter((q) => q.stage === "atandi");
-  const activeCount = queue.filter(
+  // Temsilci yalnızca sahipsiz (işlenmekte olan) başvuruları ve kendisine
+  // atananları görür; diğer temsilcilerin iş akışı gizli kalır.
+  const visibleQueue = isAdmin
+    ? queue
+    : queue.filter(
+        (q) =>
+          q.stage === "kuyrukta" ||
+          q.stage === "kontrol" ||
+          (q.stage === "atandi" && q.assignedTo === currentUser.id)
+      );
+  const assignedVisible = visibleQueue.filter((q) => q.stage === "atandi");
+  const activeCount = visibleQueue.filter(
     (q) => q.stage === "kuyrukta" || q.stage === "kontrol"
   ).length;
 
@@ -74,8 +86,8 @@ export function QueueView() {
             <p className="mt-2 text-sm leading-relaxed text-ink-300">
               Instagram veya Facebook formu doldurulduğunda başvuru saniyeler
               içinde kuyruğa düşer, mükerrer numara kontrolünden geçer ve uygun
-              temsilciye otomatik atanır. Düğmeye basarak örnek bir başvuru
-              düşürün.
+              temsilciye otomatik atanır.
+              {canTrigger ? " Düğmeye basarak örnek bir başvuru düşürün." : ""}
             </p>
           </div>
           {canTrigger ? (
@@ -125,7 +137,7 @@ export function QueueView() {
                 : "Kuyruk boş · yeni başvuru bekleniyor"
             }
           />
-          {queue.length === 0 ? (
+          {visibleQueue.length === 0 ? (
             <div className="flex flex-col items-center gap-2 px-6 py-12 text-center">
               <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gold-50 text-gold-600">
                 <IconInbox className="h-5 w-5" />
@@ -140,7 +152,7 @@ export function QueueView() {
             </div>
           ) : (
             <ul className="divide-y divide-ink-50">
-              {queue.map((q) => (
+              {visibleQueue.map((q) => (
                 <li key={q.id} className="px-5 py-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="min-w-0">
@@ -180,8 +192,10 @@ export function QueueView() {
                     <p className="mt-2 rounded-lg bg-danger-50 px-3 py-2 text-xs leading-relaxed text-danger-700 ring-1 ring-inset ring-danger-100">
                       Mükerrer numara: bu telefon{" "}
                       <span className="font-medium">
-                        {leads.find((l) => l.id === q.duplicateOf)?.name ??
-                          "mevcut bir müşteri"}
+                        {isAdmin
+                          ? (leads.find((l) => l.id === q.duplicateOf)?.name ??
+                            "mevcut bir müşteri")
+                          : "mevcut bir müşteri"}
                       </span>{" "}
                       kaydıyla eşleşti. Yeni kayıt açılmadı, başvuru mevcut
                       müşterinin temsilcisine bildirildi.
@@ -196,16 +210,22 @@ export function QueueView() {
         {/* Atama sonucu */}
         <Card>
           <CardHeader
-            title="Bu oturumda atanan leadler"
-            subtitle="Atama sonrası kayıt doğrudan müşteri listesine düşer"
+            title={isAdmin ? "Bu oturumda atanan leadler" : "Size atanan başvurular"}
+            subtitle={
+              isAdmin
+                ? "Atama sonrası kayıt doğrudan müşteri listesine düşer"
+                : "Atama sonrası kayıt doğrudan listenize düşer"
+            }
           />
-          {assignedToday.length === 0 ? (
+          {assignedVisible.length === 0 ? (
             <p className="px-5 py-8 text-center text-sm text-ink-400">
-              Henüz atama gerçekleşmedi. Bir başvuru düşürüp süreci izleyin.
+              {isAdmin
+                ? "Henüz atama gerçekleşmedi. Bir başvuru düşürüp süreci izleyin."
+                : "Bu oturumda size atanan yeni başvuru yok."}
             </p>
           ) : (
             <ul className="divide-y divide-ink-50">
-              {assignedToday.map((q) => {
+              {assignedVisible.map((q) => {
                 const lead = leads.find(
                   (l) => l.phone.replace(/\s/g, "") === q.phone.replace(/\s/g, "")
                 );

@@ -22,15 +22,15 @@ import { useData } from "@/lib/store/DataProvider";
 import type { LeadStatus } from "@/lib/types";
 
 const STATUS_COLORS: Record<LeadStatus, string> = {
-  "arandi": "#C9A227",
+  "arandi": "#D4AF37",
   "cevapsiz": "#C0503F",
   "mesgul": "#DA9B4E",
-  "beklemede": "#9C9CA4",
+  "beklemede": "#A3A3AA",
   "tekrar-aranacak": "#7FA8C9",
   "butce-asiyor": "#8A3226",
-  "ofise-gelecek": "#D4AF37",
-  "formu-dolduran": "#1E1E24",
-  "ilgilenmiyor": "#75757F",
+  "ofise-gelecek": "#BF9B2F",
+  "formu-dolduran": "#242429",
+  "ilgilenmiyor": "#7D7D85",
 };
 
 type Period = "7" | "14" | "30";
@@ -231,10 +231,10 @@ export function ReportsView() {
                         {agentName(a.agentId)}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right font-mono text-ink-900">
+                    <td className="px-4 py-3 tabular text-right font-semibold text-ink-900">
                       {formatNumber(a.calls)}
                     </td>
-                    <td className="px-4 py-3 text-right font-mono text-ink-700">
+                    <td className="px-4 py-3 tabular text-right text-ink-700">
                       {formatNumber(a.reached)}
                     </td>
                     <td className="px-4 py-3 text-right">
@@ -245,16 +245,16 @@ export function ReportsView() {
                             style={{ width: `${reach}%` }}
                           />
                         </span>
-                        <span className="font-mono text-ink-900">%{reach}</span>
+                        <span className="tabular font-medium text-ink-900">%{reach}</span>
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right font-mono text-ink-700">
+                    <td className="px-4 py-3 tabular text-right text-ink-700">
                       {formatNumber(a.appointments)}
                     </td>
-                    <td className="px-4 py-3 text-right font-mono font-semibold text-gold-700">
+                    <td className="px-4 py-3 tabular text-right font-semibold text-gold-700">
                       {formatNumber(a.sales)}
                     </td>
-                    <td className="px-4 py-3 text-right font-mono text-ink-700">
+                    <td className="px-4 py-3 tabular text-right text-ink-700">
                       %{conv.replace(".", ",")}
                     </td>
                   </tr>
@@ -262,22 +262,22 @@ export function ReportsView() {
               })}
               <tr className="bg-ink-50/60 font-medium">
                 <td className="px-5 py-3 text-ink-900">Toplam</td>
-                <td className="px-4 py-3 text-right font-mono text-ink-900">
+                <td className="px-4 py-3 tabular text-right font-semibold text-ink-900">
                   {formatNumber(totals.calls)}
                 </td>
-                <td className="px-4 py-3 text-right font-mono text-ink-900">
+                <td className="px-4 py-3 tabular text-right font-semibold text-ink-900">
                   {formatNumber(totals.reached)}
                 </td>
-                <td className="px-4 py-3 text-right font-mono text-ink-900">
+                <td className="px-4 py-3 tabular text-right font-semibold text-ink-900">
                   %{Math.round((totals.reached / Math.max(totals.calls, 1)) * 100)}
                 </td>
-                <td className="px-4 py-3 text-right font-mono text-ink-900">
+                <td className="px-4 py-3 tabular text-right font-semibold text-ink-900">
                   {formatNumber(totals.appointments)}
                 </td>
-                <td className="px-4 py-3 text-right font-mono text-ink-900">
+                <td className="px-4 py-3 tabular text-right font-semibold text-ink-900">
                   {formatNumber(totals.sales)}
                 </td>
-                <td className="px-4 py-3 text-right font-mono text-ink-900">
+                <td className="px-4 py-3 tabular text-right font-semibold text-ink-900">
                   %
                   {((totals.sales / Math.max(totals.calls, 1)) * 100)
                     .toFixed(1)

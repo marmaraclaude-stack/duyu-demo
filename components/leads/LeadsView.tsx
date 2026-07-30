@@ -514,7 +514,7 @@ export function LeadsView({ initialQuery }: { initialQuery: string }) {
                         ? `${l.block} Blok · Daire ${l.unitNo ?? "·"} · ${l.unitType ?? ""}`
                         : (l.unitType ?? "Belirlenmedi")}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 font-mono text-ink-900">
+                    <td className="tabular whitespace-nowrap px-4 py-3 font-semibold text-ink-900">
                       {l.budget !== undefined ? formatMoney(l.budget) : "·"}
                     </td>
                     <td className="whitespace-nowrap px-4 py-3 text-ink-600">

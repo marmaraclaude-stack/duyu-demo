@@ -103,7 +103,7 @@ export function PlanPrintView({
             <tbody>
               <tr className="border-b border-ink-100">
                 <td className="py-3 text-ink-500">Liste fiyatı</td>
-                <td className="py-3 text-right font-mono font-semibold text-ink-900">
+                <td className="py-3 tabular text-right font-semibold text-ink-900">
                   {formatMoney(plan.listPrice)}
                 </td>
               </tr>
@@ -111,13 +111,13 @@ export function PlanPrintView({
                 <td className="py-3 text-ink-500">
                   Peşinat (%{plan.downPaymentPct})
                 </td>
-                <td className="py-3 text-right font-mono font-semibold text-ink-900">
+                <td className="py-3 tabular text-right font-semibold text-ink-900">
                   {formatMoney(down)}
                 </td>
               </tr>
               <tr className="border-b border-ink-100">
                 <td className="py-3 text-ink-500">Kalan tutar</td>
-                <td className="py-3 text-right font-mono text-ink-900">
+                <td className="py-3 tabular text-right text-ink-900">
                   {formatMoney(remaining)}
                 </td>
               </tr>
@@ -125,7 +125,7 @@ export function PlanPrintView({
                 <td className="py-3 text-ink-500">
                   Aylık taksit ({plan.installmentMonths} ay)
                 </td>
-                <td className="py-3 text-right font-mono font-semibold text-ink-900">
+                <td className="py-3 tabular text-right font-semibold text-ink-900">
                   {formatMoney(monthly)}
                 </td>
               </tr>
@@ -134,7 +134,7 @@ export function PlanPrintView({
                   <td className="py-3 font-medium text-gold-800">
                     Peşin ödemede özel fiyat
                   </td>
-                  <td className="py-3 text-right font-mono text-lg font-semibold text-gold-700">
+                  <td className="py-3 tabular text-right font-serif text-lg font-semibold text-gold-700">
                     {formatMoney(plan.cashPrice)}
                   </td>
                 </tr>

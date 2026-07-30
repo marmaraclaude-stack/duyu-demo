@@ -155,7 +155,7 @@ export function LeadDetailView({ leadId }: { leadId: string }) {
           </div>
           <div>
             <dt className="text-xs text-ink-400">Bütçe</dt>
-            <dd className="mt-1 font-mono font-medium text-ink-900">
+            <dd className="tabular mt-1 font-semibold text-ink-900">
               {lead.budget !== undefined ? formatMoney(lead.budget) : "Belirtilmedi"}
             </dd>
           </div>
@@ -342,7 +342,7 @@ export function LeadDetailView({ leadId }: { leadId: string }) {
                 {fallbackPlans.map((p) => (
                   <li key={p.id} className="px-5 py-4">
                     <p className="text-sm font-semibold text-ink-900">{p.name}</p>
-                    <p className="mt-1 font-mono text-sm text-ink-700">
+                    <p className="tabular mt-1 text-sm font-semibold text-ink-700">
                       {formatMoney(p.listPrice)}
                     </p>
                     <p className="mt-0.5 text-xs text-ink-400">
