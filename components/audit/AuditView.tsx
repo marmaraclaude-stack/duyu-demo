@@ -44,7 +44,7 @@ export function AuditView() {
             <thead>
               <tr className="border-b border-ink-100 text-xs text-ink-400">
                 <th className="px-5 py-3 font-medium">Modül</th>
-                <th className="px-4 py-3 font-medium">Yönetici · Adil Can K.</th>
+                <th className="px-4 py-3 font-medium">Yönetici</th>
                 <th className="px-4 py-3 font-medium">Temsilciler</th>
               </tr>
             </thead>

@@ -1,37 +1,48 @@
 import type { User } from "../types";
 
+// Demo hesaplar: jenerik isimler ve basit şifreler. Tam sürümde gerçek
+// kişiler ve güvenli kimlik doğrulama (Supabase Auth) ile değiştirilecek.
+
 export const USERS: User[] = [
   {
     id: "u-adil",
-    name: "Adil Can K.",
+    name: "Yönetici",
     role: "yonetici",
     title: "Satış Direktörü",
-    initials: "AK",
+    initials: "YN",
     phone: "0532 481 10 01",
+    username: "yonetici",
+    password: "duyu2026",
   },
   {
     id: "u-ayse",
-    name: "Ayşe Y.",
+    name: "Satış Temsilcisi 1",
     role: "temsilci",
     title: "Satış Temsilcisi",
-    initials: "AY",
+    initials: "T1",
     phone: "0532 481 10 02",
+    username: "temsilci1",
+    password: "satis2026",
   },
   {
     id: "u-mehmet",
-    name: "Mehmet T.",
+    name: "Satış Temsilcisi 2",
     role: "temsilci",
     title: "Satış Temsilcisi",
-    initials: "MT",
+    initials: "T2",
     phone: "0532 481 10 03",
+    username: "temsilci2",
+    password: "satis2026",
   },
   {
     id: "u-zeynep",
-    name: "Zeynep A.",
+    name: "Satış Temsilcisi 3",
     role: "temsilci",
     title: "Satış Temsilcisi",
-    initials: "ZA",
+    initials: "T3",
     phone: "0532 481 10 04",
+    username: "temsilci3",
+    password: "satis2026",
   },
 ];
 

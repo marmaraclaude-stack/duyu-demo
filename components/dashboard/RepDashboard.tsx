@@ -52,7 +52,6 @@ export function RepDashboard() {
 
   const leadName = (id: string) => leads.find((l) => l.id === id)?.name ?? "·";
   const now = demoNow();
-  const firstName = currentUser.name.split(" ")[0];
   const greeting = now.getHours() < 12 ? "Günaydın" : "İyi günler";
   const targetPct = Math.min(100, Math.round((myCalls / DAILY_TARGET) * 100));
 
@@ -73,7 +72,7 @@ export function RepDashboard() {
               {formatDayName(now.toISOString())} · {formatDate(now.toISOString())}
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-white">
-              {greeting}, {firstName}
+              {greeting}, {currentUser.name}
             </h2>
             <p className="mt-1.5 text-sm text-ink-300">
               Bugün {overdue.length + openToday.length} açık hatırlatmanız ve{" "}

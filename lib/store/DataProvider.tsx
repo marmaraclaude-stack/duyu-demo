@@ -60,12 +60,29 @@ interface AddCallInput {
 
 export type DataSource = "demo" | "supabase";
 
+// Oturum yokken tip güvenliği için kullanılan sözde kullanıcı; giriş
+// ekranı kabukta olduğundan sayfalara hiçbir zaman sızmaz.
+const GUEST: User = {
+  id: "u-guest",
+  name: "Ziyaretçi",
+  role: "temsilci",
+  title: "·",
+  initials: "·",
+  phone: "·",
+  username: "",
+  password: "",
+};
+
+const AUTH_STORAGE_KEY = "duyu-crm-user";
+
 interface DataContextValue {
   users: User[];
   currentUser: User;
   role: Role;
   dataSource: DataSource;
-  setCurrentUserId: (id: string) => void;
+  isAuthenticated: boolean;
+  login: (username: string, password: string) => boolean;
+  logout: () => void;
 
   leads: Lead[];
   calls: CallRecord[];
@@ -166,7 +183,7 @@ const INCOMING_POOL = [
 ];
 
 export function DataProvider({ children }: { children: ReactNode }) {
-  const [currentUserId, setCurrentUserId] = useState("u-adil");
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [dataSource, setDataSource] = useState<DataSource>("demo");
   const [leads, setLeads] = useState<Lead[]>(LEADS);
   const [calls, setCalls] = useState<CallRecord[]>(CALLS);
@@ -222,14 +239,50 @@ export function DataProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const currentUser = USERS.find((u) => u.id === currentUserId) ?? USERS[0];
+  // Oturum kalıcılığı: sayfa yenilense de giriş korunur (demo, localStorage)
+  useEffect(() => {
+    const saved = window.localStorage.getItem(AUTH_STORAGE_KEY);
+    if (saved && USERS.some((u) => u.id === saved)) {
+      setCurrentUserId(saved);
+    }
+  }, []);
+
+  const currentUser = USERS.find((u) => u.id === currentUserId) ?? GUEST;
+  const isAuthenticated = currentUser.id !== GUEST.id;
   const role: Role = currentUser.role;
+
+  const login = useCallback((username: string, password: string): boolean => {
+    const user = USERS.find(
+      (u) =>
+        u.username === username.trim().toLocaleLowerCase("tr") &&
+        u.password === password
+    );
+    if (!user) return false;
+    setCurrentUserId(user.id);
+    window.localStorage.setItem(AUTH_STORAGE_KEY, user.id);
+    setAuditLogs((prev) => [
+      {
+        id: nextId("a"),
+        userId: user.id,
+        action: "Sisteme giriş",
+        target: user.role === "yonetici" ? "Yönetici paneli" : "Temsilci paneli",
+        at: new Date().toISOString(),
+      },
+      ...prev,
+    ]);
+    return true;
+  }, []);
+
+  const logout = useCallback(() => {
+    setCurrentUserId(null);
+    window.localStorage.removeItem(AUTH_STORAGE_KEY);
+  }, []);
 
   const audit = useCallback(
     (action: string, target: string, detail?: string, userId?: string) => {
       const entry: AuditLog = {
         id: nextId("a"),
-        userId: userId ?? currentUserId,
+        userId: userId ?? currentUserId ?? "u-adil",
         action,
         target,
         detail,
@@ -291,7 +344,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       const call: CallRecord = {
         id: nextId("c"),
         leadId: input.leadId,
-        agentId: currentUserId,
+        agentId: currentUser.id,
         at: now,
         result: input.result,
         note: input.note,
@@ -317,7 +370,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         const reminder: Reminder = {
           id: nextId("r"),
           leadId: input.leadId,
-          agentId: currentUserId,
+          agentId: currentUser.id,
           type: input.reminderType ?? "arama",
           dueAt: input.nextCallAt,
           note: input.note,
@@ -334,7 +387,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         input.nextCallAt ? "Sonraki arama için hatırlatma oluşturuldu" : undefined
       );
     },
-    [audit, currentUserId, leads]
+    [audit, currentUser.id, leads]
   );
 
   const completeReminder = useCallback(
@@ -406,7 +459,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       const entry: PrintLog = {
         id: nextId("pl"),
         planId,
-        agentId: currentUserId,
+        agentId: currentUser.id,
         leadId,
         at: new Date().toISOString(),
       };
@@ -421,7 +474,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         lead ? `Müşteri: ${lead.name}` : undefined
       );
     },
-    [audit, currentUserId, leads, plans]
+    [audit, currentUser.id, leads, plans]
   );
 
   const saveFilter = useCallback(
@@ -537,7 +590,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
       currentUser,
       role,
       dataSource,
-      setCurrentUserId,
+      isAuthenticated,
+      login,
+      logout,
       leads,
       calls,
       reminders,
@@ -564,6 +619,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
       currentUser,
       role,
       dataSource,
+      isAuthenticated,
+      login,
+      logout,
       leads,
       calls,
       reminders,

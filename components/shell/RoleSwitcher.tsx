@@ -1,12 +1,15 @@
 "use client";
 
+// Kullanıcı menüsü: aktif hesabı gösterir ve çıkış yapmayı sağlar.
+// Farklı role geçiş, giriş ekranından ilgili hesapla oturum açılarak yapılır.
+
 import { useEffect, useRef, useState } from "react";
 import { Avatar } from "@/components/ui/Avatar";
-import { IconCheck, IconChevronDown } from "@/components/ui/Icons";
+import { IconChevronDown } from "@/components/ui/Icons";
 import { useData } from "@/lib/store/DataProvider";
 
 export function RoleSwitcher() {
-  const { users, currentUser, setCurrentUserId } = useData();
+  const { currentUser, role, logout } = useData();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -37,36 +40,31 @@ export function RoleSwitcher() {
       </button>
 
       {open ? (
-        <div className="absolute right-0 z-40 mt-2 w-72 rounded-xl border border-ink-100 bg-white p-2 shadow-pop">
-          <p className="section-label px-3 pb-2 pt-1.5">Rol değiştir · demo</p>
-          {users.map((u) => (
-            <button
-              key={u.id}
-              onClick={() => {
-                setCurrentUserId(u.id);
-                setOpen(false);
-              }}
-              className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-ink-50 ${
-                u.id === currentUser.id ? "bg-gold-50" : ""
-              }`}
-            >
-              <Avatar name={u.name} size="sm" />
-              <span className="flex-1">
-                <span className="block text-sm font-medium text-ink-900">
-                  {u.name}
-                </span>
-                <span className="block text-xs text-ink-400">
-                  {u.role === "yonetici" ? "Yönetici" : "Temsilci"} · {u.title}
-                </span>
+        <div className="absolute right-0 z-40 mt-2 w-64 rounded-xl border border-ink-100 bg-white p-2 shadow-pop">
+          <div className="flex items-center gap-3 rounded-lg bg-ink-50 px-3 py-2.5">
+            <Avatar name={currentUser.name} size="sm" />
+            <span>
+              <span className="block text-sm font-medium text-ink-900">
+                {currentUser.name}
               </span>
-              {u.id === currentUser.id ? (
-                <IconCheck className="h-4 w-4 text-gold-600" />
-              ) : null}
-            </button>
-          ))}
+              <span className="block text-xs text-ink-400">
+                {role === "yonetici" ? "Yönetici" : "Temsilci"} ·{" "}
+                {currentUser.title}
+              </span>
+            </span>
+          </div>
+          <button
+            onClick={() => {
+              setOpen(false);
+              logout();
+            }}
+            className="mt-1.5 block w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-danger-600 transition-colors hover:bg-danger-50"
+          >
+            Çıkış yap
+          </button>
           <p className="border-t border-ink-100 px-3 pb-1.5 pt-2 text-[11px] leading-snug text-ink-400">
-            Temsilci yalnızca kendisine atanan kayıtları görür, yönetici tüm
-            veriye ve raporlara erişir.
+            Farklı bir hesapla devam etmek için çıkış yapıp o hesapla giriş
+            yapın.
           </p>
         </div>
       ) : null}
