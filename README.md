@@ -13,13 +13,18 @@ npm run dev        # http://localhost:3000
 npm run build      # üretim derlemesi
 ```
 
-## Roller
+## Giriş ve roller
 
-Topbar'daki kullanıcı menüsünden anında rol değiştirilir:
+Uygulama giriş ekranıyla açılır; oturum tarayıcıda korunur, sağ üstteki
+kullanıcı menüsünden çıkış yapılır. Demo hesaplar (tam sürümde gerçek
+kişiler ve güvenli kimlik doğrulamayla değiştirilecek):
 
-- Yönetici · Adil Can K.: tüm kayıtlar, raporlama, yetki ve kayıt izi
-- Temsilciler · Ayşe Y., Mehmet T., Zeynep A.: yalnızca kendilerine atanan
-  müşteriler ve hatırlatmalar
+| Hesap | Kullanıcı adı | Şifre | Yetki |
+| --- | --- | --- | --- |
+| Yönetici | `yonetici` | `duyu2026` | Tüm kayıtlar, raporlama, yetki ve kayıt izi, plan yönetimi |
+| Satış Temsilcisi 1 | `temsilci1` | `satis2026` | Yalnızca kendine atanan müşteriler ve hatırlatmalar |
+| Satış Temsilcisi 2 | `temsilci2` | `satis2026` | Yalnızca kendine atanan müşteriler ve hatırlatmalar |
+| Satış Temsilcisi 3 | `temsilci3` | `satis2026` | Yalnızca kendine atanan müşteriler ve hatırlatmalar |
 
 ## Modüller
 

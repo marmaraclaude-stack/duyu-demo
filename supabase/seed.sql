@@ -2,10 +2,10 @@
 -- lib/data/* ile aynı kayıtlar; tarihler çalıştırma gününe göre üretilir.
 
 insert into app_users (id, name, role, title, initials, phone) values
-  ('u-adil',   'Adil Can K.', 'yonetici', 'Satış Direktörü',    'AK', '0532 481 10 01'),
-  ('u-ayse',   'Ayşe Y.',     'temsilci', 'Satış Temsilcisi',   'AY', '0532 481 10 02'),
-  ('u-mehmet', 'Mehmet T.',   'temsilci', 'Satış Temsilcisi',   'MT', '0532 481 10 03'),
-  ('u-zeynep', 'Zeynep A.',   'temsilci', 'Satış Temsilcisi',   'ZA', '0532 481 10 04');
+  ('u-adil',   'Yönetici',            'yonetici', 'Satış Direktörü',  'YN', '0532 481 10 01'),
+  ('u-ayse',   'Satış Temsilcisi 1',  'temsilci', 'Satış Temsilcisi', 'T1', '0532 481 10 02'),
+  ('u-mehmet', 'Satış Temsilcisi 2',  'temsilci', 'Satış Temsilcisi', 'T2', '0532 481 10 03'),
+  ('u-zeynep', 'Satış Temsilcisi 3',  'temsilci', 'Satış Temsilcisi', 'T3', '0532 481 10 04');
 
 insert into leads (id, name, phone, email, status, source, blok, unit_no, unit_type, budget, assigned_to, note, created_at, updated_at) values
   ('l-mehmetk',   'Mehmet K.',     '0532 214 45 67', 'mehmetk@example.com', 'arandi',          'instagram-form', 'B', 3,  '2+1', 3450000, 'u-ayse',   'B Blok Daire 3 ile yakından ilgili, eşiyle birlikte örnek daireyi gezdi.', current_date - 18 + time '10:24', current_date + time '09:42'),

@@ -1,13 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import type { ReactNode } from "react";
-import { Button } from "@/components/ui/Button";
-import { IconShield } from "@/components/ui/Icons";
+import { IconArrowRight, IconShield } from "@/components/ui/Icons";
 import { useData } from "@/lib/store/DataProvider";
 
-// Yalnızca yönetici rolünde görüntülenebilen sayfalar için sarmalayıcı.
+// Yalnızca yönetici hesabıyla görüntülenebilen sayfalar için sarmalayıcı.
 export function AdminOnly({ children }: { children: ReactNode }) {
-  const { role, setCurrentUserId } = useData();
+  const { role } = useData();
 
   if (role === "yonetici") return <>{children}</>;
 
@@ -17,19 +17,18 @@ export function AdminOnly({ children }: { children: ReactNode }) {
         <IconShield className="h-6 w-6" />
       </span>
       <h2 className="mt-4 text-base font-semibold text-ink-900">
-        Bu sayfa yönetici rolüne özel
+        Bu sayfa yönetici hesabına özel
       </h2>
       <p className="mt-2 text-sm text-ink-400">
         Raporlama ve kayıt izi ekranlarına yalnızca yönetici hesabı erişebilir.
-        Demo için rol değiştirebilirsiniz.
+        Görüntülemek için yönetici hesabıyla giriş yapın.
       </p>
-      <Button
-        variant="gold"
-        className="mt-5"
-        onClick={() => setCurrentUserId("u-adil")}
+      <Link
+        href="/"
+        className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-gold-700 hover:text-gold-600"
       >
-        Yönetici olarak devam et
-      </Button>
+        Panoma dön <IconArrowRight className="h-4 w-4" />
+      </Link>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { useState, type ReactNode } from "react";
 import { IconMenu } from "@/components/ui/Icons";
 import { useData } from "@/lib/store/DataProvider";
 import { GlobalSearch } from "./GlobalSearch";
+import { LoginView } from "./LoginView";
 import { NotificationsBell } from "./NotificationsBell";
 import { RoleSwitcher } from "./RoleSwitcher";
 import { Sidebar } from "./Sidebar";
@@ -27,8 +28,13 @@ function pageTitle(pathname: string, role: string): string {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { role } = useData();
+  const { role, isAuthenticated } = useData();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Oturum yoksa tüm uygulama giriş ekranının arkasındadır.
+  if (!isAuthenticated) {
+    return <LoginView />;
+  }
 
   // Yazdırma görünümleri kabuk olmadan, temiz beyaz sayfada açılır.
   if (pathname.startsWith("/yazdir")) {

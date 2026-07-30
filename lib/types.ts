@@ -10,6 +10,9 @@ export interface User {
   title: string;
   initials: string;
   phone: string;
+  // Demo giriş bilgileri: tam sürümde gerçek kimlik doğrulamayla değişecek
+  username: string;
+  password: string;
 }
 
 export type LeadStatus =

@@ -12,12 +12,17 @@ export function Avatar({
   name: string;
   size?: "sm" | "md" | "lg";
 }) {
-  const initials = name
-    .split(" ")
-    .map((p) => p[0])
-    .slice(0, 2)
-    .join("")
-    .toLocaleUpperCase("tr");
+  const parts = name.split(" ").filter(Boolean);
+  const last = parts[parts.length - 1];
+  // "Satış Temsilcisi 1" gibi numaralı adlarda baş harf + numara gösterilir
+  const initials = (
+    parts.length > 1 && /^\d+$/.test(last)
+      ? `${parts[0][0]}${last}`
+      : parts
+          .map((p) => p[0])
+          .slice(0, 2)
+          .join("")
+  ).toLocaleUpperCase("tr");
   const idx =
     name.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0) %
     PALETTE.length;
