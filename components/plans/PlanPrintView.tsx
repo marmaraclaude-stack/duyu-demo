@@ -55,7 +55,7 @@ export function PlanPrintView({
       <div className="print-page mx-auto max-w-3xl overflow-hidden rounded-xl bg-white shadow-card">
         <header className="flex items-center justify-between bg-ink-950 px-8 py-6">
           <div>
-            <p className="font-serif text-xl font-semibold tracking-wide text-white">
+            <p className="text-xl font-semibold tracking-wide text-white">
               Duyu Konutları
             </p>
             <p className="mt-0.5 text-[11px] tracking-[0.2em] text-gold-400">
@@ -69,7 +69,7 @@ export function PlanPrintView({
         </header>
 
         <div className="px-8 py-7">
-          <h1 className="font-serif text-2xl font-semibold text-ink-900">
+          <h1 className="text-2xl font-semibold text-ink-900">
             {plan.name}
           </h1>
           <p className="mt-1 text-sm text-ink-400">
@@ -134,7 +134,7 @@ export function PlanPrintView({
                   <td className="py-3 font-medium text-gold-800">
                     Peşin ödemede özel fiyat
                   </td>
-                  <td className="py-3 tabular text-right font-serif text-lg font-semibold text-gold-700">
+                  <td className="py-3 tabular text-right text-lg font-semibold text-gold-700">
                     {formatMoney(plan.cashPrice)}
                   </td>
                 </tr>

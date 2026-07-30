@@ -83,7 +83,7 @@ export function AdminDashboard() {
           <Card key={s.label} className="px-5 py-4">
             <p className="text-xs font-medium text-ink-400">{s.label}</p>
             <p
-              className={`mt-2 font-serif text-3xl font-semibold ${
+              className={`mt-2 text-3xl font-semibold ${
                 s.alert ? "text-danger-600" : "text-ink-900"
               }`}
             >

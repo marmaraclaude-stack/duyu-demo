@@ -48,7 +48,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             >
               <IconMenu className="h-5 w-5" />
             </button>
-            <h1 className="hidden min-w-fit font-serif text-lg font-semibold text-ink-900 md:block">
+            <h1 className="hidden min-w-fit text-lg font-semibold text-ink-900 md:block">
               {pageTitle(pathname, role)}
             </h1>
             <div className="flex flex-1 justify-center px-2">
@@ -57,7 +57,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <NotificationsBell />
             <RoleSwitcher />
           </div>
-          <h1 className="border-t border-ink-100 px-4 py-2 font-serif text-base font-semibold text-ink-900 md:hidden">
+          <h1 className="border-t border-ink-100 px-4 py-2 text-base font-semibold text-ink-900 md:hidden">
             {pageTitle(pathname, role)}
           </h1>
         </header>

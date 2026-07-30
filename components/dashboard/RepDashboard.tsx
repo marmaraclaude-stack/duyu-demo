@@ -72,7 +72,7 @@ export function RepDashboard() {
             <p className="text-[11px] tracking-[0.2em] text-gold-400">
               {formatDayName(now.toISOString())} · {formatDate(now.toISOString())}
             </p>
-            <h2 className="mt-2 font-serif text-2xl font-semibold text-white">
+            <h2 className="mt-2 text-2xl font-semibold text-white">
               {greeting}, {firstName}
             </h2>
             <p className="mt-1.5 text-sm text-ink-300">
@@ -129,7 +129,7 @@ export function RepDashboard() {
           <Card key={s.label} className="px-5 py-4">
             <p className="text-xs font-medium text-ink-400">{s.label}</p>
             <p
-              className={`mt-2 font-serif text-3xl font-semibold ${
+              className={`mt-2 text-3xl font-semibold ${
                 s.alert ? "text-danger-600" : "text-ink-900"
               }`}
             >
