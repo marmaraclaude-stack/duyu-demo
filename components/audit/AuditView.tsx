@@ -82,18 +82,20 @@ export function AuditView() {
           title="İşlem kaydı"
           subtitle="Kim, neyi, ne zaman yaptı · en yeni üstte"
           action={
-            <Select
-              value={userFilter}
-              onChange={(e) => setUserFilter(e.target.value)}
-              className="w-44"
-            >
-              <option value="">Tüm kullanıcılar</option>
-              {users.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.name}
-                </option>
-              ))}
-            </Select>
+            <div className="w-44 shrink-0">
+              <Select
+                value={userFilter}
+                onChange={(e) => setUserFilter(e.target.value)}
+                aria-label="Kullanıcı filtresi"
+              >
+                <option value="">Tüm kullanıcılar</option>
+                {users.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
           }
         />
         <div className="thin-scroll overflow-x-auto">

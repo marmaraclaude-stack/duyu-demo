@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { Field, Select, TextArea, TextInput } from "@/components/ui/Field";
+import { Field, MoneyInput, Select, TextArea, TextInput } from "@/components/ui/Field";
 import { Modal } from "@/components/ui/Modal";
 import { ALL_SOURCES, ALL_STATUSES, SOURCE_LABELS, STATUS_LABELS } from "@/lib/labels";
 import { useData } from "@/lib/store/DataProvider";
@@ -219,11 +219,10 @@ export function LeadFormModal({
           </Field>
         </div>
         <Field label="Bütçe (₺)">
-          <TextInput
+          <MoneyInput
             value={form.budget}
-            onChange={(e) => set("budget", e.target.value.replace(/\D/g, ""))}
-            placeholder="3450000"
-            className="font-mono"
+            onValueChange={(d) => set("budget", d)}
+            placeholder="3.450.000"
           />
         </Field>
         <div className="sm:col-span-2">

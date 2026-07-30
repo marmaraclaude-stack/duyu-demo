@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { Field, Select, TextArea, TextInput } from "@/components/ui/Field";
+import { Field, MoneyInput, Select, TextArea, TextInput } from "@/components/ui/Field";
 import { Modal } from "@/components/ui/Modal";
 import { useData } from "@/lib/store/DataProvider";
 import type { Block, PaymentPlan, UnitType } from "@/lib/types";
@@ -65,11 +65,16 @@ export function PlanFormModal({
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
 
+  const pct = Number(form.downPaymentPct);
+  const months = Number(form.installmentMonths);
   const valid =
     form.name.trim().length >= 3 &&
     Number(form.listPrice) > 0 &&
-    Number(form.downPaymentPct) > 0 &&
-    Number(form.installmentMonths) > 0;
+    pct >= 1 &&
+    pct <= 99 &&
+    months >= 1 &&
+    months <= 120 &&
+    (!form.cashPrice || Number(form.cashPrice) < Number(form.listPrice));
 
   const submit = () => {
     if (!valid) return;
@@ -137,35 +142,42 @@ export function PlanFormModal({
           </Select>
         </Field>
         <Field label="Liste fiyatı (₺)">
-          <TextInput
+          <MoneyInput
             value={form.listPrice}
-            onChange={(e) => set("listPrice", e.target.value.replace(/\D/g, ""))}
-            placeholder="4750000"
-            className="font-mono"
+            onValueChange={(d) => set("listPrice", d)}
+            placeholder="4.750.000"
           />
         </Field>
-        <Field label="Peşin ödeme özel fiyatı (₺, isteğe bağlı)">
-          <TextInput
+        <Field
+          label="Peşin ödeme özel fiyatı (₺, isteğe bağlı)"
+          hint={
+            form.cashPrice &&
+            form.listPrice &&
+            Number(form.cashPrice) >= Number(form.listPrice)
+              ? "Peşin fiyat liste fiyatının altında olmalı"
+              : undefined
+          }
+        >
+          <MoneyInput
             value={form.cashPrice}
-            onChange={(e) => set("cashPrice", e.target.value.replace(/\D/g, ""))}
-            placeholder="4390000"
-            className="font-mono"
+            onValueChange={(d) => set("cashPrice", d)}
+            placeholder="4.390.000"
           />
         </Field>
-        <Field label="Peşinat oranı (%)">
+        <Field label="Peşinat oranı (%)" hint="1 ile 99 arası">
           <TextInput
             value={form.downPaymentPct}
             onChange={(e) =>
-              set("downPaymentPct", e.target.value.replace(/\D/g, ""))
+              set("downPaymentPct", e.target.value.replace(/\D/g, "").slice(0, 2))
             }
             className="font-mono"
           />
         </Field>
-        <Field label="Taksit süresi (ay)">
+        <Field label="Taksit süresi (ay)" hint="1 ile 120 arası">
           <TextInput
             value={form.installmentMonths}
             onChange={(e) =>
-              set("installmentMonths", e.target.value.replace(/\D/g, ""))
+              set("installmentMonths", e.target.value.replace(/\D/g, "").slice(0, 3))
             }
             className="font-mono"
           />

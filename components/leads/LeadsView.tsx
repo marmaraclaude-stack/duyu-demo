@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { Field, Select, TextInput } from "@/components/ui/Field";
+import { Field, MoneyInput, TextInput } from "@/components/ui/Field";
 import {
   IconDownload,
   IconEdit,
@@ -19,7 +19,7 @@ import { Modal } from "@/components/ui/Modal";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Avatar } from "@/components/ui/Avatar";
 import { downloadCsv } from "@/lib/csv";
-import { formatDate, formatMoney, formatPhone } from "@/lib/format";
+import { formatDate, formatDateOnly, formatMoney, formatPhone } from "@/lib/format";
 import {
   ALL_SOURCES,
   ALL_STATUSES,
@@ -159,13 +159,13 @@ export function LeadsView({ initialQuery }: { initialQuery: string }) {
   if (params.dateFrom)
     chips.push({
       key: "df",
-      label: `Başlangıç: ${formatDate(params.dateFrom)}`,
+      label: `Başlangıç: ${formatDateOnly(params.dateFrom)}`,
       onRemove: () => set({ dateFrom: undefined }),
     });
   if (params.dateTo)
     chips.push({
       key: "dt",
-      label: `Bitiş: ${formatDate(params.dateTo)}`,
+      label: `Bitiş: ${formatDateOnly(params.dateTo)}`,
       onRemove: () => set({ dateTo: undefined }),
     });
 
@@ -373,56 +373,38 @@ export function LeadsView({ initialQuery }: { initialQuery: string }) {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Bütçe alt sınır (₺)">
-                  <TextInput
+                  <MoneyInput
                     value={params.budgetMin !== undefined ? String(params.budgetMin) : ""}
-                    onChange={(e) =>
-                      set({
-                        budgetMin: e.target.value
-                          ? Number(e.target.value.replace(/\D/g, ""))
-                          : undefined,
-                      })
+                    onValueChange={(d) =>
+                      set({ budgetMin: d ? Number(d) : undefined })
                     }
-                    placeholder="2000000"
-                    className="font-mono"
+                    placeholder="2.000.000"
                   />
                 </Field>
                 <Field label="Bütçe üst sınır (₺)">
-                  <TextInput
+                  <MoneyInput
                     value={params.budgetMax !== undefined ? String(params.budgetMax) : ""}
-                    onChange={(e) =>
-                      set({
-                        budgetMax: e.target.value
-                          ? Number(e.target.value.replace(/\D/g, ""))
-                          : undefined,
-                      })
+                    onValueChange={(d) =>
+                      set({ budgetMax: d ? Number(d) : undefined })
                     }
-                    placeholder="5000000"
-                    className="font-mono"
+                    placeholder="5.000.000"
                   />
                 </Field>
                 <Field label="Kayıt · başlangıç">
                   <TextInput
                     type="date"
-                    value={params.dateFrom ? params.dateFrom.slice(0, 10) : ""}
+                    value={params.dateFrom ?? ""}
                     onChange={(e) =>
-                      set({
-                        dateFrom: e.target.value
-                          ? new Date(`${e.target.value}T00:00:00`).toISOString()
-                          : undefined,
-                      })
+                      set({ dateFrom: e.target.value || undefined })
                     }
                   />
                 </Field>
                 <Field label="Kayıt · bitiş">
                   <TextInput
                     type="date"
-                    value={params.dateTo ? params.dateTo.slice(0, 10) : ""}
+                    value={params.dateTo ?? ""}
                     onChange={(e) =>
-                      set({
-                        dateTo: e.target.value
-                          ? new Date(`${e.target.value}T00:00:00`).toISOString()
-                          : undefined,
-                      })
+                      set({ dateTo: e.target.value || undefined })
                     }
                   />
                 </Field>

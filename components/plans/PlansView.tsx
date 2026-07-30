@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Select } from "@/components/ui/Field";
 import { IconEdit, IconPlus, IconPrinter } from "@/components/ui/Icons";
 import { formatDate, formatDateTime, formatMoney } from "@/lib/format";
@@ -34,26 +35,30 @@ export function PlansView() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-2">
-        <Select
-          value={blockFilter}
-          onChange={(e) => setBlockFilter(e.target.value as "" | Block)}
-          className="w-36"
-        >
-          <option value="">Tüm bloklar</option>
-          <option value="A">A Blok</option>
-          <option value="B">B Blok</option>
-          <option value="C">C Blok</option>
-        </Select>
-        <Select
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value as "" | UnitType)}
-          className="w-36"
-        >
-          <option value="">Tüm tipler</option>
-          <option value="1+1">1+1</option>
-          <option value="2+1">2+1</option>
-          <option value="3+1">3+1</option>
-        </Select>
+        <div className="w-36 shrink-0">
+          <Select
+            value={blockFilter}
+            onChange={(e) => setBlockFilter(e.target.value as "" | Block)}
+            aria-label="Blok filtresi"
+          >
+            <option value="">Tüm bloklar</option>
+            <option value="A">A Blok</option>
+            <option value="B">B Blok</option>
+            <option value="C">C Blok</option>
+          </Select>
+        </div>
+        <div className="w-32 shrink-0">
+          <Select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value as "" | UnitType)}
+            aria-label="Daire tipi filtresi"
+          >
+            <option value="">Tüm tipler</option>
+            <option value="1+1">1+1</option>
+            <option value="2+1">2+1</option>
+            <option value="3+1">3+1</option>
+          </Select>
+        </div>
         <div className="flex-1" />
         <Button
           variant="gold"
@@ -67,6 +72,26 @@ export function PlansView() {
       </div>
 
       {/* Plan kartları */}
+      {filtered.length === 0 ? (
+        <Card>
+          <EmptyState
+            title="Bu filtrede plan yok"
+            description="Seçili blok ve daire tipi için tanımlı plan bulunmuyor."
+            action={
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  setBlockFilter("");
+                  setTypeFilter("");
+                }}
+              >
+                Filtreleri temizle
+              </Button>
+            }
+          />
+        </Card>
+      ) : null}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {filtered.map((p) => {
           const down = Math.round((p.listPrice * p.downPaymentPct) / 100);

@@ -120,17 +120,19 @@ export function ReportsView() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-2">
-        <Select
-          value={period}
-          onChange={(e) => setPeriod(e.target.value as Period)}
-          className="w-40"
-        >
-          {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
-            <option key={p} value={p}>
-              {PERIOD_LABELS[p]}
-            </option>
-          ))}
-        </Select>
+        <div className="w-40 shrink-0">
+          <Select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value as Period)}
+            aria-label="Rapor dönemi"
+          >
+            {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
+              <option key={p} value={p}>
+                {PERIOD_LABELS[p]}
+              </option>
+            ))}
+          </Select>
+        </div>
         <div className="flex-1" />
         <Button variant="secondary" onClick={exportCsv}>
           <IconDownload className="h-4 w-4" /> CSV/Excel&apos;e aktar
