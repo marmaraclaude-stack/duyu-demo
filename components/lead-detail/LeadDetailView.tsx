@@ -125,7 +125,7 @@ export function LeadDetailView({ leadId }: { leadId: string }) {
                 </h2>
                 <StatusBadge status={lead.status} />
               </div>
-              <p className="mt-1 font-mono text-sm text-ink-500">
+              <p className="mt-1 tabular text-sm text-ink-500">
                 {formatPhone(lead.phone)}
                 {lead.email ? (
                   <span className="ml-3 font-sans text-ink-400">{lead.email}</span>
@@ -270,7 +270,7 @@ export function LeadDetailView({ leadId }: { leadId: string }) {
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <StatusBadge status={c.result} />
-                        <span className="font-mono text-xs text-ink-400">
+                        <span className="tabular text-xs text-ink-400">
                           {formatDateTime(c.at)}
                         </span>
                         <span className="text-xs text-ink-400">
@@ -311,7 +311,7 @@ export function LeadDetailView({ leadId }: { leadId: string }) {
                       <p className="text-sm font-medium text-ink-900">
                         {REMINDER_TYPE_LABELS[r.type]}
                       </p>
-                      <p className="font-mono text-xs text-ink-500">
+                      <p className="tabular text-xs text-ink-500">
                         {formatDate(r.dueAt)} · {formatTime(r.dueAt)}
                       </p>
                       {r.note ? (
@@ -377,7 +377,7 @@ export function LeadDetailView({ leadId }: { leadId: string }) {
                 {leadPrints.map((p) => (
                   <li key={p.id} className="px-5 py-3">
                     <p className="text-sm text-ink-700">{planName(p.planId)}</p>
-                    <p className="mt-0.5 font-mono text-xs text-ink-400">
+                    <p className="mt-0.5 tabular text-xs text-ink-400">
                       {formatDateTime(p.at)} · {userName(p.agentId)}
                     </p>
                   </li>

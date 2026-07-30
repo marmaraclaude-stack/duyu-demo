@@ -68,7 +68,7 @@ export function GlobalSearch() {
                 <span className="block text-sm font-medium text-ink-900">
                   {l.name}
                 </span>
-                <span className="block font-mono text-xs text-ink-400">
+                <span className="block tabular text-xs text-ink-400">
                   {formatPhone(l.phone)}
                 </span>
               </span>

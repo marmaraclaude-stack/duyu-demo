@@ -54,7 +54,7 @@ export function Donut({
         </svg>
         {centerValue ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="font-mono text-xl font-semibold text-ink-900">
+            <span className="tabular text-xl font-semibold text-ink-900">
               {centerValue}
             </span>
             <span className="text-[11px] text-ink-400">{centerLabel}</span>
@@ -69,7 +69,7 @@ export function Donut({
               style={{ backgroundColor: d.color }}
             />
             <span className="flex-1 text-ink-500">{d.label}</span>
-            <span className="font-mono font-medium text-ink-900">
+            <span className="tabular font-medium text-ink-900">
               {d.value}
             </span>
           </li>

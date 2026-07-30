@@ -23,7 +23,7 @@ export function Funnel({ data }: { data: FunnelDatum[] }) {
               <span className="text-xs font-medium text-ink-500">
                 {d.label}
               </span>
-              <span className="font-mono text-sm font-semibold text-ink-900">
+              <span className="tabular text-sm font-semibold text-ink-900">
                 {formatNumber(d.value)}
                 {conv !== null ? (
                   <span className="ml-2 font-sans text-[11px] font-normal text-ink-400">

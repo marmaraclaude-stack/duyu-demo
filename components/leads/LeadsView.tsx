@@ -501,7 +501,7 @@ export function LeadsView({ initialQuery }: { initialQuery: string }) {
                         <span className="block font-medium text-ink-900 group-hover:text-gold-700">
                           {l.name}
                         </span>
-                        <span className="block font-mono text-xs text-ink-400">
+                        <span className="block tabular text-xs text-ink-400">
                           {formatPhone(l.phone)}
                         </span>
                       </Link>

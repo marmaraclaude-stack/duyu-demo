@@ -131,7 +131,7 @@ export function LeadFormModal({
             value={form.phone}
             onChange={(e) => set("phone", e.target.value)}
             placeholder="05xx xxx xx xx"
-            className="font-mono"
+            className="tabular"
           />
         </Field>
         <Field label="E-posta (isteğe bağlı)">
@@ -199,7 +199,7 @@ export function LeadFormModal({
                 set("unitNo", e.target.value.replace(/\D/g, ""))
               }
               placeholder="3"
-              className="font-mono"
+              className="tabular"
             />
           </Field>
           <Field label="Daire tipi">

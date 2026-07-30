@@ -170,7 +170,7 @@ export function PlanFormModal({
             onChange={(e) =>
               set("downPaymentPct", e.target.value.replace(/\D/g, "").slice(0, 2))
             }
-            className="font-mono"
+            className="tabular"
           />
         </Field>
         <Field label="Taksit süresi (ay)" hint="1 ile 120 arası">
@@ -179,7 +179,7 @@ export function PlanFormModal({
             onChange={(e) =>
               set("installmentMonths", e.target.value.replace(/\D/g, "").slice(0, 3))
             }
-            className="font-mono"
+            className="tabular"
           />
         </Field>
         <div className="sm:col-span-2">
